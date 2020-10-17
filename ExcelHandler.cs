@@ -23,7 +23,7 @@ namespace CST_With_only_excel
         {
             List<Spelare> temp = new List<Spelare>();
 
-            using(var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file))
             {
                 var cells = package.Workbook.Worksheets["Ranking"].Cells["C7:C19"].Value.ToString();
 
@@ -31,13 +31,13 @@ namespace CST_With_only_excel
                               where cell.Value != null
                               select cell.Value);
                 int i = 1;
-                foreach(var p in query1)
+                foreach (var p in query1)
                 {
                     Spelare newSpelare = new Spelare(p.ToString(), i);
                     temp.Add(newSpelare);
                     i++;
                 }
-                    
+
 
             }
 
@@ -48,7 +48,7 @@ namespace CST_With_only_excel
         public void testUpdateTableWithNewPlayerClass(string row, string row2, string match2row, string match2row2, int Player1Score1, int player2Score1, int player1Score2, int player2Score2)
         {
             int round = 1;
-            using(var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file))
             {
                 //Game 1
                 package.Workbook.Worksheets["S30" + round].Cells[row].Value = Player1Score1;
@@ -64,7 +64,7 @@ namespace CST_With_only_excel
         //ska användas
         public int GetRowNumber(string Name)
         {
-            using(var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file))
             {
                 var query1 = (from cell in package.Workbook.Worksheets["S301"].Cells["A7:A80"]
                               where cell.Value != null && cell.Value.ToString() == Name
@@ -75,31 +75,31 @@ namespace CST_With_only_excel
 
         }
 
-    public List<RankInfo> ImportRankingTable(List<Spelare> list)
+        public List<RankInfo> ImportRankingTable(List<Spelare> list)
         {
             List<RankInfo> tempRank = new List<RankInfo>();
-            using(var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file))
             {
                 var query1 = (from cell in package.Workbook.Worksheets["Ranking"].Cells["C7:C80"]
                               where cell.Value != null
                               select cell.Value);
 
                 int i = 0;
-                foreach(var p in query1)
+                foreach (var p in query1)
                 {
-                    if(p.ToString() == list[i].fullname)
+                    if (p.ToString() == list[i].fullname)
                     {
                         var playerRow = (from cell in package.Workbook.Worksheets["Ranking"].Cells["C7:C80"]
-                                 where cell.Text == list[i].fullname.Trim()
-                                 select cell.Start.Row).First();
+                                         where cell.Text == list[i].fullname.Trim()
+                                         select cell.Start.Row).First();
 
                         RankInfo newPlayer = new RankInfo();
-                        if(package.Workbook.Worksheets["Ranking"].Cells["E" + playerRow].Value != null)
+                        if (package.Workbook.Worksheets["Ranking"].Cells["E" + playerRow].Value != null)
                         {
                             newPlayer.player = list[i];
                             newPlayer.omgång1 = Convert.ToInt32(package.Workbook.Worksheets["Ranking"].Cells["E" + playerRow].Value);
                         }
-                        if(package.Workbook.Worksheets["Ranking"].Cells["F" + playerRow].Value != null)
+                        if (package.Workbook.Worksheets["Ranking"].Cells["F" + playerRow].Value != null)
                         {
                             newPlayer.player = list[i];
                             newPlayer.omgång2 = Convert.ToInt32(package.Workbook.Worksheets["Ranking"].Cells["F" + playerRow].Value);
@@ -141,17 +141,17 @@ namespace CST_With_only_excel
         {
             List<Spelare> listOfDivisions = ListOfDivisions;
             int round = 1;
-            using(var package = new ExcelPackage(file))
+            using (var package = new ExcelPackage(file))
             {
-                for(int i = 0; i < listOfDivisions.Count(); i++)
+                for (int i = 0; i < listOfDivisions.Count(); i++)
                 {
                     int fakeRank = listOfDivisions[i].rank;
-                    if(fakeRank > 3)
+                    if (fakeRank > 3)
                         fakeRank = fakeRank - (3 * (listOfDivisions[i].division - 1));
 
                     if (listOfDivisions[i].division == 1)
                     {
-                        if(fakeRank == 1)
+                        if (fakeRank == 1)
                         {
                             package.Workbook.Worksheets["S30" + round].Cells["A12"].Value = listOfDivisions[i].name;
                             package.Workbook.Worksheets["S30" + round].Cells["A13"].Value = listOfDivisions[i].lastname;
@@ -268,7 +268,7 @@ namespace CST_With_only_excel
         public void updateRank(List<Spelare> list, int Round, List<RankInfo> OldRankInfo)
         {
             var round = Round;
-            List < RankInfo > oldRankInfo= OldRankInfo;
+            List<RankInfo> oldRankInfo = OldRankInfo;
             using (var package = new ExcelPackage(file))
             {
                 //Skriv alltid till E7, F7, H7, J7, L7, N7
@@ -284,10 +284,10 @@ namespace CST_With_only_excel
                         package.Workbook.Worksheets["Ranking"].Cells["C" + (i + 7).ToString()].Value = list[i].name.Trim() + Environment.NewLine + list[i].lastname.Trim();
                         package.Workbook.Worksheets["Ranking"].Cells["F" + (i + 7).ToString()].Value = list[i].rank;
 
-                        foreach(var r in oldRankInfo)
+                        foreach (var r in oldRankInfo)
                         {
 
-                            if(list[i].fullname == r.player.fullname)
+                            if (list[i].fullname == r.player.fullname)
                             {
                                 package.Workbook.Worksheets["Ranking"].Cells["E" + (i + 7).ToString()].Value = r.omgång1;
                             }
@@ -379,18 +379,18 @@ namespace CST_With_only_excel
             int p2Row;
 
             if (player1.rank > 3)
-                rankSpelare1 = player1.rank - (3 * (player1.division -1));
+                rankSpelare1 = player1.rank - (3 * (player1.division - 1));
             if (player2.rank > 3)
                 rankSpelare2 = player2.rank - (3 * (player2.division - 1));
 
             using (var package = new ExcelPackage(file))
             {
                 p1Row = (from cell in package.Workbook.Worksheets["S30" + round].Cells["A11:A57"]
-                              where cell.Text == player1.name.Trim()
-                              select cell.Start.Row).First();
+                         where cell.Text == player1.name.Trim()
+                         select cell.Start.Row).First();
                 p2Row = (from cell in package.Workbook.Worksheets["S30" + round].Cells["A11:A57"]
-                              where cell.Text == player2.name.Trim()
-                              select cell.Start.Row).First();
+                         where cell.Text == player2.name.Trim()
+                         select cell.Start.Row).First();
 
                 if (rankSpelare1 == 1)
                 {
@@ -552,7 +552,7 @@ namespace CST_With_only_excel
                     package.Save();
                 }
             }
-         
+
         }
 
         public void UpdatePlacement()
